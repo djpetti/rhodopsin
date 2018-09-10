@@ -75,6 +75,21 @@ def _run_training_iteration(self):
   ...
 ```
 
+Incidentally, `Hyperperparameters` has a useful method called `get_changed()`.
+This returns a list of all the parameters that have changed since the last call.
+
+```python
+params = self.get_params()
+print params.get_changed()
+# Prints []
+
+params.add("learning_rate", 0.001)
+params.add("momentum", 0.9)
+
+print params.get_changed()
+# Prints ['learning_rate', 'momentum']
+```
+
 ### Custom Hyperparameters
 
 So far, Rhodopsin does not specify any default hyperparameters. Therefore, if
