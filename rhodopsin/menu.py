@@ -34,12 +34,19 @@ class Menu(object):
     iterations = self._status.get_value("iterations")
     print "(Iteration %d)" % (iterations)
 
+    self._print_custom()
+
     # Display the options alphabetically.
     option_names = self.__options.keys()
     option_names.sort()
     for option in option_names:
       desc, command = self.__options[option]
       print "\t%s: %s" % (option, desc)
+
+  def _print_custom(self):
+    """ Prints custom text for a menu. This will be printed after the header,
+    but before the options are listed. """
+    pass
 
   def _unique_shorthand(self, name):
     """ Creates a unique shorthand for an option.
@@ -320,3 +327,38 @@ class StatusMenu(Menu):
       self.update_description(option, desc)
 
     super(StatusMenu, self)._print_menu()
+
+class LoadModelMenu(Menu):
+  """ Menu that allows the user to load a saved model. """
+
+  def __init__(self, hyper, status, save_file):
+    """
+    Args:
+      save_file: The saved model file that we want to load. """
+    super(LoadModelMenu, self).__init__("Load Model", hyper, status)
+
+    self.add_option("y", "Yes", self.__load)
+    self.add_option("n", "No", self.__continue)
+
+    self.__save_file = save_file
+    self.__should_load = False
+
+  def _print_custom(self):
+    print "\nFound saved model '%s'." % (self.__save_file)
+    print "Would you like to load it?\n"
+
+  def __load(self, *args, **kwargs):
+    """ Indicates that we want to load the model. """
+    self.__should_load = True
+    return Menu.CONTINUE
+
+  def __continue(self, *args, **kwargs):
+    """ Indicates that we don't want to load the model. """
+    self.__should_load = False
+    return Menu.CONTINUE
+
+  def should_load(self):
+    """
+    Returns:
+      Whether or not we should load the model, based on the user's response. """
+    return self.__should_load
