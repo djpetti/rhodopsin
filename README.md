@@ -158,3 +158,75 @@ def _run_training_iteration(self):
   status.update("loss", loss)
   status.update("acc", accuracy)
 ```
+
+### Model Saving and Loading
+
+Optionally, Rhodopsin can automatically manage saving and loading your model as
+well. Here is a basic example:
+
+```python
+from rhodopsin import experiment
+
+
+class MyExp(experiment.Experiment):
+  """ This is a class for my experiment. """
+
+  def _run_training_iteration(self):
+    ...
+    Code to run a single training iteration.
+    ...
+
+  def _run_testing_iteration(self):
+    ...
+    Code to run a single testing iteration.
+    ...
+
+  def _save_model(self, save_file):
+    ...
+    Code to save the model to "save_file".
+    ...
+
+  def _load_model(self, save_file):
+    ...
+    Code to load the model from "save_file".
+    ...
+
+
+# The number of training iterations to run before every testing iteration.
+testing_iters = 100
+
+exp = MyExp(testing_iters, save_file="my_model.hd5")
+# Run the training until manually stopped.
+exp.train()
+```
+
+It is important to note that `save_file` can be used simply as a generic name,
+not necessarily a file name. For instance, if using TensorFlow's built-in saver,
+save file can be the name of the save directory.
+
+There is also another method that can be overriden:
+
+```python
+def _model_exists(self, save_file):
+  ...
+```
+
+This method checks if a saved model exists. The default simply checks whether
+`save_file` is a valid path, but you can override it to do something more
+complicated.
+
+If your model requires some kind of initialization before it can be loaded,
+there is an optional method to do that:
+
+```python
+def _init_experiment(self)
+  ...
+  Model initialization code.
+  ...
+```
+
+This method will always be called before we check for and attempt to load a
+saved model.
+
+If `_save_model()` is implemented, the model will be saved after every testing
+iteration, as well as whenever the menu is exited.
