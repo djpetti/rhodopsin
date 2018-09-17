@@ -100,17 +100,17 @@ class Status(Params):
     super(Status, self).add(name, value)
 
     # We have no history at all yet.
-    self.__param_histories[name] = collections.deque()
+    self.__param_histories[name] = collections.deque([value])
 
   def update(self, name, value):
     super(Status, self).update(name, value)
 
     # Update the parameter history.
-    self.__param_histories[name].appendleft(value)
+    self.__param_histories[name].append(value)
 
     if len(self.__param_histories[name]) > Status._MAX_HISTORY_LEN:
       # Remove an item, since we're over the max length.
-      self.__param_histories[name].pop()
+      self.__param_histories[name].popleft()
 
   def get_history(self, name):
     """" Gets the historical values for a parameter.
