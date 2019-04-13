@@ -28,11 +28,11 @@ class Menu(object):
     # Create header line.
     header = "%s Menu:" % (self.__name)
     header = header.title()
-    print header
+    print(header)
 
     # Show the iterations counter.
     iterations = self._status.get_value("iterations")
-    print "(Iteration %d)" % (iterations)
+    print("(Iteration %d)" % (iterations))
 
     self._print_custom()
 
@@ -41,7 +41,7 @@ class Menu(object):
     option_names.sort()
     for option in option_names:
       desc, command = self.__options[option]
-      print "\t%s: %s" % (option, desc)
+      print("\t%s: %s" % (option, desc))
 
   def _print_custom(self):
     """ Prints custom text for a menu. This will be printed after the header,
@@ -305,13 +305,13 @@ class StatusMenu(Menu):
     while window <= 10000:
       if len(history) < window:
         # Not enough history to compute this average.
-        print "Avg. (last %d): --" % (window)
+        print("Avg. (last %d): --" % (window))
 
       else:
         # Compute the average.
         window_data = history[:window]
         mean = sum(window_data) / float(len(window_data))
-        print "Avg. (last %d): %f" % (window, mean)
+        print("Avg. (last %d): %f" % (window, mean))
 
       window *= 10
 
@@ -344,8 +344,8 @@ class LoadModelMenu(Menu):
     self.__should_load = False
 
   def _print_custom(self):
-    print "\nFound saved model '%s'." % (self.__save_file)
-    print "Would you like to load it?\n"
+    print("\nFound saved model '%s'." % (self.__save_file))
+    print("Would you like to load it?\n")
 
   def __load(self, *args, **kwargs):
     """ Indicates that we want to load the model. """

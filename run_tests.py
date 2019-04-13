@@ -12,7 +12,7 @@ def run_python_tests():
   """ Runs the Python tests.
   Returns:
     True if the tests all succeed, False if there are failures. """
-  print "Starting tests..."
+  print("Starting tests...")
 
   loader = unittest.TestLoader()
   # Get the directory this module is in.

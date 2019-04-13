@@ -2,8 +2,8 @@ import os
 import signal
 import sys
 
-import menu
-import params
+from . import menu
+from . import params
 
 
 class Experiment(object):
@@ -74,7 +74,7 @@ class Experiment(object):
       return
 
     # Give some immediate feedback.
-    print "Signal caught, entering menu after current iteration."
+    print("Signal caught, entering menu after current iteration.")
 
     # Indicate that we want to enter the menu on the next iteration.
     self.__enter_menu = True

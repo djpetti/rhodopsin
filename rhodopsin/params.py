@@ -65,7 +65,7 @@ class Params(object):
     """
     Returns:
       List of the names of all parameters. """
-    return self.__parameters.keys()
+    return list(self.__parameters.keys())
 
   def get_changed(self):
     """
