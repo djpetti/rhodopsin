@@ -37,7 +37,7 @@ class Menu(object):
     self._print_custom()
 
     # Display the options alphabetically.
-    option_names = self.__options.keys()
+    option_names = list(self.__options.keys())
     option_names.sort()
     for option in option_names:
       desc, command = self.__options[option]
@@ -104,7 +104,7 @@ class Menu(object):
     # Wait for input.
     selection = None
     while selection not in self.__options:
-      selection = raw_input("(Choose an option): ")
+      selection = input("(Choose an option): ")
 
     # Perform the command.
     _, command = self.__options[selection]
@@ -316,13 +316,13 @@ class StatusMenu(Menu):
       window *= 10
 
     # Wait for the user to continue.
-    raw_input("(Press Enter to continue)")
+    input("(Press Enter to continue)")
     # Stay on the same menu.
     return self.get_name()
 
   def _print_menu(self):
     # Before we print, update the current value for all the parameters.
-    for option, name in self.__option_params.iteritems():
+    for option, name in self.__option_params.items():
       desc = self.__make_description(name)
       self.update_description(option, desc)
 
