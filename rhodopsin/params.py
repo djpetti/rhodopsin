@@ -2,124 +2,124 @@ import collections
 
 
 class Params(object):
-  """ Superclass for collections of numeric parameters. """
+    """ Superclass for collections of numeric parameters. """
 
-  def __init__(self):
-    # Actual dict containing parameters and their values.
-    self.__parameters = {}
-    # Keeps track of parameters that were changed for get_changed.
-    self.__changed = set()
+    def __init__(self):
+        # Actual dict containing parameters and their values.
+        self.__parameters = {}
+        # Keeps track of parameters that were changed for get_changed.
+        self.__changed = set()
 
-  def add(self, name, value):
-    """ Adds a new hyperparameter.
-    Args:
-      name: The name of the parameter.
-      value: The initial value of the parameter. """
-    if name in self.__parameters:
-      raise NameError("Parameter '%s' already exists." % (name))
+    def add(self, name, value):
+        """ Adds a new hyperparameter.
+        Args:
+          name: The name of the parameter.
+          value: The initial value of the parameter. """
+        if name in self.__parameters:
+            raise NameError("Parameter '%s' already exists." % (name))
 
-    self.__parameters[name] = value
-    # New parameters automatically count as "changed".
-    self.__changed.add(name)
+        self.__parameters[name] = value
+        # New parameters automatically count as "changed".
+        self.__changed.add(name)
 
-  def add_if_not_set(self, name, value):
-    """ Adds a new parameter, but only if it doesn't already exist. Otherwise,
-    it does nothing.
-    Args:
-      name: The name of the parameter.
-      value: The value to set for the parameter. """
-    if name in self.__parameters:
-      # Already set.
-      return
+    def add_if_not_set(self, name, value):
+        """ Adds a new parameter, but only if it doesn't already exist. Otherwise,
+        it does nothing.
+        Args:
+          name: The name of the parameter.
+          value: The value to set for the parameter. """
+        if name in self.__parameters:
+            # Already set.
+            return
 
-    self.add(name, value)
+        self.add(name, value)
 
-  def update(self, name, value):
-    """ Updates an existing parameter.
-    Args:
-      name: The name of the parameter.
-      value: The initial value of the parameter. """
-    if name not in self.__parameters:
-      raise NameError("Parameter '%s' does not exist." % (name))
+    def update(self, name, value):
+        """ Updates an existing parameter.
+        Args:
+          name: The name of the parameter.
+          value: The initial value of the parameter. """
+        if name not in self.__parameters:
+            raise NameError("Parameter '%s' does not exist." % (name))
 
-    if self.__parameters[name] == value:
-      # Already set. Don't update.
-      return
+        if self.__parameters[name] == value:
+            # Already set. Don't update.
+            return
 
-    self.__parameters[name] = value
-    # Mark the parameter as changed.
-    self.__changed.add(name)
+        self.__parameters[name] = value
+        # Mark the parameter as changed.
+        self.__changed.add(name)
 
-  def get_value(self, name):
-    """ Gets the value of a hyperparameter.
-    Args:
-      name: The name of the hyperparameter.
-    Returns:
-      The value of said hyperparameter. """
-    if name not in self.__parameters:
-      raise NameError("Parameter '%s' does not exist." % (name))
+    def get_value(self, name):
+        """ Gets the value of a hyperparameter.
+        Args:
+          name: The name of the hyperparameter.
+        Returns:
+          The value of said hyperparameter. """
+        if name not in self.__parameters:
+            raise NameError("Parameter '%s' does not exist." % (name))
 
-    return self.__parameters[name]
+        return self.__parameters[name]
 
-  def get_all(self):
-    """
-    Returns:
-      List of the names of all parameters. """
-    return list(self.__parameters.keys())
+    def get_all(self):
+        """
+        Returns:
+          List of the names of all parameters. """
+        return list(self.__parameters.keys())
 
-  def get_changed(self):
-    """
-    Returns:
-      List of the names of the parameters that have been updated since this
-      was last called. """
-    changed = list(self.__changed)
-    # Clear the set for next time.
-    self.__changed.clear()
+    def get_changed(self):
+        """
+        Returns:
+          List of the names of the parameters that have been updated since this
+          was last called. """
+        changed = list(self.__changed)
+        # Clear the set for next time.
+        self.__changed.clear()
 
-    return changed
+        return changed
 
 
 class HyperParams(Params):
-  """ Represents hyperparameters that can be used to configure an experiment. """
+    """ Represents hyperparameters that can be used to configure an experiment. """
 
-  pass
+    pass
 
 class Status(Params):
-  """ Status indicators from the experiment. """
+    """ Status indicators from the experiment. """
 
-  # Maximum history length to store for parameters.
-  _MAX_HISTORY_LEN = 10000
+    # Maximum history length to store for parameters.
+    _MAX_HISTORY_LEN = 10000
 
-  def __init__(self):
-    super(Status, self).__init__()
+    def __init__(self):
+        super(Status, self).__init__()
 
-    # Maps parameters to historical value data.
-    self.__param_histories = {}
+        # Maps parameters to historical value data.
+        self.__param_histories = {}
 
-  def add(self, name, value):
-    super(Status, self).add(name, value)
+    def add(self, name, value):
+        super(Status, self).add(name, value)
 
-    # We have no history at all yet.
-    self.__param_histories[name] = collections.deque([value])
+        # We have no history at all yet.
+        self.__param_histories[name] = collections.deque([value])
 
-  def update(self, name, value):
-    super(Status, self).update(name, value)
+    def update(self, name, value):
+        super(Status, self).update(name, value)
 
-    # Update the parameter history.
-    self.__param_histories[name].append(value)
+        # Update the parameter history.
+        self.__param_histories[name].append(value)
 
-    if len(self.__param_histories[name]) > Status._MAX_HISTORY_LEN:
-      # Remove an item, since we're over the max length.
-      self.__param_histories[name].popleft()
+        if len(self.__param_histories[name]) > Status._MAX_HISTORY_LEN:
+            # Remove an item, since we're over the max length.
+            self.__param_histories[name].popleft()
 
-  def get_history(self, name):
-    """" Gets the historical values for a parameter.
-    Args:
-      name: The name of the parameter.
-    Returns:
-      A list of the historical values for that parameter. """
-    if name not in self.__param_histories:
-      # No such parameter.
-      raise NameError("Parameter '%s' does not exist." % (name))
+    def get_history(self, name):
+        """" Gets the historical values for a parameter.
+        Args:
+          name: The name of the parameter.
+        Returns:
+          A list of the historical values for that parameter. """
+        if name not in self.__param_histories:
+            # No such parameter.
+            raise NameError("Parameter '%s' does not exist." % (name))
 
-    return list(self.__param_histories[name])
+        return list(self.__param_histories[name])

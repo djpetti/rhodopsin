@@ -39,12 +39,12 @@ from rhodopsin import experiment
 class MyExp(experiment.Experiment):
   """ This is a class for my experiment. """
 
-  def _run_training_iteration(self):
+  def _run_training_step(self):
     ...
     Code to run a single training iteration.
     ...
 
-  def _run_testing_iteration(self):
+  def _run_testing_step(self):
     ...
     Code to run a single testing iteration.
     ...
@@ -65,7 +65,7 @@ check for changes in your training code, and take any appropriate action. Here
 is an example of reading the set value of a hyperparameter:
 
 ```python
-def _run_training_iteration(self):
+def _run_training_step(self):
   params = self.get_params()
   # Get the set value for the learning rate.
   learning_rate = params.get_value("learning_rate")
@@ -147,7 +147,7 @@ experiment.train()
 The status parameters can then be updated from within your training code:
 
 ```python
-def _run_training_iteration(self):
+def _run_training_step(self):
   status = self.get_status()
 
   ...
@@ -171,12 +171,12 @@ from rhodopsin import experiment
 class MyExp(experiment.Experiment):
   """ This is a class for my experiment. """
 
-  def _run_training_iteration(self):
+  def _run_training_step(self):
     ...
     Code to run a single training iteration.
     ...
 
-  def _run_testing_iteration(self):
+  def _run_testing_step(self):
     ...
     Code to run a single testing iteration.
     ...
